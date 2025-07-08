@@ -9,9 +9,12 @@ export interface Contact {
 }
 
 export function useContacts() {
-  return useQuery<Contact[]>(["contacts"], async () => {
-    const res = await fetch("/api/contacts");
-    if (!res.ok) throw new Error("Failed to fetch contacts");
-    return res.json();
+  return useQuery<Contact[]>({
+    queryKey: ["contacts"],
+    queryFn: async () => {
+      const res = await fetch("/api/contacts");
+      if (!res.ok) throw new Error("Failed to fetch contacts");
+      return res.json();
+    },
   });
 }

@@ -9,12 +9,12 @@ export interface Opportunity {
 }
 
 export function useOpportunities() {
-  return useQuery<Opportunity[]>(
-    ["opportunities"],
-    async () => {
+  return useQuery<Opportunity[]>({
+    queryKey: ["opportunities"],
+    queryFn: async () => {
       const res = await fetch("/api/opportunities");
       if (!res.ok) throw new Error("Failed to fetch opportunities");
       return res.json();
-    }
-  );
+    },
+  });
 }
