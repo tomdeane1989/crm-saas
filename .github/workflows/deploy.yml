@@ -1,0 +1,40 @@
+name: CD
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Build and push backend Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: ./backend
+          file: ./backend/Dockerfile
+          push: true
+          tags: your-docker-username/crm-backend:latest
+
+      - name: Build and push frontend Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: ./frontend
+          file: ./frontend/Dockerfile
+          push: true
+          tags: your-docker-username/crm-frontend:latest
+
+      - name: Deploy to Render
+        uses: render-examples/deploy@v1
+        with:
+          api-key: ${{ secrets.RENDER_API_KEY }}
+          services: |
+            backend: srv-xxxxx
+            frontend: srv-yyyyy
+
+      - name: Run Prisma migrations
+        run: |
+          docker run --rm your-docker-username/crm-backend:latest \
+            npx prisma migrate deploy
