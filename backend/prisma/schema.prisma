@@ -1,91 +1,112 @@
-// prisma/schema.prisma
+generator client {
+  provider        = "prisma-client-js"
+}
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-generator client {
-  provider = "prisma-client-js"
-}
-
-// Core CRM models
-
 model Company {
-  id           Int           @id @default(autoincrement())
-  name         String
-  website      String?
-  industry     String?
-  customFields Json?         @db.JsonB
-  contacts     Contact[]
+  id            Int         @id @default(autoincrement())
+  externalId    String?     @unique
+  name          String
+  industry      String?
+  website       String?
+  customFields  Json?       // JSONB for user-defined fields
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  contacts      Contact[]
   opportunities Opportunity[]
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
+  activities    Activity[]
+
+  @@index([externalId])
+  @@index([name])
 }
 
 model Contact {
-  id           Int       @id @default(autoincrement())
-  company      Company   @relation(fields: [companyId], references: [id])
-  companyId    Int
-  firstName    String
-  lastName     String
-  email        String     @unique
-  phone        String?
-  customFields Json?      @db.JsonB
-  activities   Activity[]
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
+  id            Int       @id @default(autoincrement())
+  externalId    String?   @unique
+  firstName     String
+  lastName      String
+  email         String?   @unique
+  phone         String?
+  role          String?
+  customFields  Json?
+  company       Company   @relation(fields: [companyId], references: [id])
+  companyId     Int
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  activities    Activity[]
+  opportunities Opportunity[]
+  
+  @@index([externalId])
+  @@index([email])
 }
 
 model Opportunity {
   id            Int       @id @default(autoincrement())
-  company       Company   @relation(fields: [companyId], references: [id])
-  companyId     Int
+  externalId    String?   @unique
   title         String
   amount        Float?
-  stage         String
+  status        String
   closeDate     DateTime?
-  customFields  Json?     @db.JsonB
-  activities    Activity[]
+  customFields  Json?
+  company       Company   @relation(fields: [companyId], references: [id])
+  companyId     Int
+  contact       Contact?  @relation(fields: [contactId], references: [id])
+  contactId     Int?
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
+
+  activities    Activity[]
+
+  @@index([externalId])
+  @@index([status])
+  @@index([closeDate])
 }
 
 model Activity {
-  id           Int       @id @default(autoincrement())
-  contact      Contact?  @relation(fields: [contactId], references: [id])
-  contactId    Int?
-  opportunity  Opportunity? @relation(fields: [opportunityId], references: [id])
+  id            Int       @id @default(autoincrement())
+  type          String    // e.g. call, email, meeting
+  details       String?
+  occurredAt    DateTime  @default(now())
+  customFields  Json?
+
+  company       Company   @relation(fields: [companyId], references: [id])
+  companyId     Int
+  contact       Contact?  @relation(fields: [contactId], references: [id])
+  contactId     Int?
+  opportunity   Opportunity? @relation(fields: [opportunityId], references: [id])
   opportunityId Int?
-  type         String     // e.g. "call", "email", "meeting"
-  occurredAt   DateTime
-  notes        String?    @db.Text
-  customFields Json?      @db.JsonB
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
+
+  createdAt     DateTime  @default(now())
+
+  @@index([type])
+  @@index([occurredAt])
 }
 
-// AI-related tables
-
 model Embedding {
-  id          Int      @id @default(autoincrement())
-  entityType  String   // e.g. "Company", "Contact", "Opportunity", "Activity"
-  entityId    Int
-  model       String   // e.g. "openai-ada-002"
-  vector      Json     @db.JsonB  // store embedding array here
-  createdAt   DateTime @default(now())
+  id         Int      @id @default(autoincrement())
+  model      String   // e.g. "text-embedding-ada-002"
+  vector     Float[]  // raw float array for later vector extension
+  metadata   Json?    // e.g. { "entity": "Opportunity", "entityId": 42 }
+  createdAt  DateTime @default(now())
 
-  @@index([entityType, entityId])
   @@index([model])
+  @@index([createdAt])
 }
 
 model PromptLog {
   id          Int      @id @default(autoincrement())
-  model       String   // model used for this prompt
+  model       String
   prompt      String   @db.Text
   response    String   @db.Text
   tokensUsed  Int
   createdAt   DateTime @default(now())
 
+  @@index([model])
   @@index([createdAt])
 }
