@@ -1,28 +1,17 @@
-import EmailComposer from '../components/EmailComposer';
+import React from 'react';
+import EmailComposer from '../../components/EmailComposer';
 import { useContacts } from "../../hooks/useContacts";
 
 export default function ContactsPage() {
-  const { data, isLoading, isError, error } = useContacts();
-
-  if (isLoading) return <div>Loading contacts…</div>;
-      <EmailComposer />
-  if (isError) return <div>Error: {String(error)}</div>;
-      <EmailComposer />
+  const { data: contacts } = useContacts();
 
   return (
-    <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">Contacts</h1>
-      <ul className="space-y-2">
-        {data!.map((c) => (
-          <li key={c.id} className="p-2 border rounded">
-            <div className="font-semibold">
-              {c.firstName} {c.lastName}
-            </div>
-            <div className="text-sm">{c.email}</div>
-            {c.phone && <div className="text-sm">{c.phone}</div>}
-          </li>
-        ))}
-      </ul>
+    <div>
+      {/* Existing contacts list/table */}
+      {/* <ContactsTable contacts={contacts} /> */}
+
+      {/* Your AI Email Composer */}
+      <EmailComposer />
     </div>
   );
 }

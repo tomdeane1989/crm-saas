@@ -21,7 +21,7 @@ export default function App() {
         <Link to="/contacts" className="mr-4">Contacts</Link>
         <Link to="/opportunities" className="mr-4">Opportunities</Link>
         <Link to="/activities" className="mr-4">Activities</Link>
-        <Link to="/dashboard" className="mr-4">Dashboard</Link>
+        <Link to="/dashboard" className="mr-4">Reports</Link>
         <Link to="/settings" className="mr-4">Settings</Link>
         {/* Add more links as you build out the app */}
         {/* Add other links as you build pages */}

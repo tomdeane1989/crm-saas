@@ -1,33 +1,34 @@
-import React, { useState } from 'react';
-import { useAskDashboard } from '../hooks/useAskDashboard';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
+import React, { useState } from "react";
+import { useAskDashboard } from "../hooks/useAskDashboard";
 
 export default function AskDashboard() {
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState("");
   const mutation = useAskDashboard();
 
-  const handleAsk = () => mutation.mutate(query);
-
   return (
-    <Card className="p-4 mb-4">
-      <h2 className="text-xl font-semibold mb-2">Ask Dashboard</h2>
-      <div className="flex space-x-2">
-        <Input
+    <div style={{ padding: 16, background: "#f9f9f9", borderRadius: 8 }}>
+      <h2 style={{ fontSize: 20, marginBottom: 8 }}>Ask Dashboard</h2>
+      <div style={{ display: "flex", gap: 8 }}>
+        <input
+          type="text"
           value={query}
-          onChange={e => setQuery(e.currentTarget.value)}
+          onChange={(e) => setQuery(e.currentTarget.value)}
           placeholder="e.g. Show me opps closing this month over £10k"
+          style={{ flex: 1, padding: 8, borderRadius: 4, border: "1px solid #ccc" }}
         />
-        <Button onClick={handleAsk} disabled={mutation.isLoading}>
-          {mutation.isLoading ? 'Asking…' : 'Ask'}
-        </Button>
+        <button
+          onClick={() => mutation.mutate(query)}
+          disabled={mutation.isLoading}
+          style={{ padding: "8px 16px", borderRadius: 4, cursor: "pointer" }}
+        >
+          {mutation.isLoading ? "Asking…" : "Ask"}
+        </button>
       </div>
       {mutation.data && (
-        <CardContent className="mt-4 whitespace-pre-wrap">
+        <pre style={{ marginTop: 12, padding: 8, background: "#fff", borderRadius: 4 }}>
           {JSON.stringify(mutation.data, null, 2)}
-        </CardContent>
+        </pre>
       )}
-    </Card>
+    </div>
   );
 }
