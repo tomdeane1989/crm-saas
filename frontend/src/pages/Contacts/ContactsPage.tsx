@@ -1,10 +1,13 @@
+import EmailComposer from '../components/EmailComposer';
 import { useContacts } from "../../hooks/useContacts";
 
 export default function ContactsPage() {
   const { data, isLoading, isError, error } = useContacts();
 
   if (isLoading) return <div>Loading contacts…</div>;
+      <EmailComposer />
   if (isError) return <div>Error: {String(error)}</div>;
+      <EmailComposer />
 
   return (
     <div className="p-4">
