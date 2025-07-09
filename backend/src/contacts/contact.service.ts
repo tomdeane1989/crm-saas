@@ -15,11 +15,11 @@ export class ContactsService {
     return this.prisma.contact.findUnique({ where: { id } });
   }
 
-  create(createContactDto: CreatecontactDto): Promise<Contact> {
+  create(createContactDto: CreateContactDto): Promise<Contact> {
     return this.prisma.contact.create({ data: createContactDto });
   }
 
-  update(id: number, updateContactDto: UpdatecontactDto): Promise<Contact> {
+  update(id: number, updateContactDto: UpdateContactDto): Promise<Contact> {
     return this.prisma.contact.update({
       where: { id },
       data: updateContactDto,
