@@ -9,7 +9,6 @@ import { ActivitiesModule } from './activities/activities.module';
 import { AuthModule } from './auth/auth.module';
 import { AiModule } from './ai/ai.module';
 import { JobsModule } from './jobs/jobs.module';
-import { AiController } from './ai/ai.controller';
 
 @Module({
   imports: [
@@ -22,7 +21,7 @@ import { AiController } from './ai/ai.controller';
     AiModule,
     JobsModule,
   ],
-  controllers: [AiController],
-  providers: [],
+  controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule {}

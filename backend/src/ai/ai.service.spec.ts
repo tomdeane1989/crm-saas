@@ -9,7 +9,7 @@ describe('AiService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AiService,
-        PrismaService,       // ← add this
+        PrismaService, // ← add this
       ],
     }).compile();
 

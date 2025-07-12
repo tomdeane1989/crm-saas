@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useEmailAutocomplete } from "../hooks/useEmailAutocomplete";
 
 export default function EmailComposer() {
@@ -22,10 +22,10 @@ export default function EmailComposer() {
       />
       <button
         onClick={handleAutocomplete}
-        disabled={mutation.isLoading}
+        disabled={mutation.isPending}
         style={{ marginTop: 8, padding: "8px 16px", borderRadius: 4, cursor: "pointer" }}
       >
-        {mutation.isLoading ? "Generating…" : "Autocomplete"}
+        {mutation.isPending ? "Generating…" : "Autocomplete"}
       </button>
     </div>
   );

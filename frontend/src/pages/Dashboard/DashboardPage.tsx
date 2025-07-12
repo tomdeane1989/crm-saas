@@ -1,9 +1,8 @@
-import React from 'react';
 import AskDashboard from '../../components/AskDashboard';
-import { useDashboardStats } from '../../hooks/useDashboardStats';
+// import { useDashboardStats } from '../../hooks/useDashboardStats';
 
 export default function DashboardPage() {
-  const stats = useDashboardStats();
+  // const stats = useDashboardStats();
 
   return (
     <div className="space-y-4">
